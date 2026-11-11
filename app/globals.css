@@ -1,0 +1,322 @@
+@layer theme, base, antd, components, utilities;
+
+@import "tailwindcss";
+
+/* ====== Design tokens (R2.1) — 7 màu thương hiệu, chỉ đổi màu ở đây ======
+   Style: Nature Distilled (nền ấm kem/be, bóng mềm) + Soft UI Evolution (component)
+   + Accessible & Ethical (chuẩn nền) + Micro-interactions + bo góc/đường cong Organic.
+   Độ tương phản đã đo: chữ trắng trên brand-dark 6.5:1 · brand-dark trên pink 5.0:1,
+   trên beige 5.7:1, trên cream 6.4:1 · ink trên mọi nền ≥ 10:1.
+   `brand` (3.3:1) chỉ dùng cho icon, đường kẻ, trang trí và chữ lớn ≥ 24px. */
+@theme inline {
+  --color-brand: #b08472;
+  --color-brand-dark: #7a5546;
+  --color-pink: #f6dcdc;
+  --color-blush: #e9a9a9;
+  --color-beige: #f5ede3;
+  --color-cream: #fffdf9;
+  --color-ink: #3d2e2a;
+  /* Màu phái sinh từ 7 token (không thêm màu mới) */
+  --color-muted: color-mix(in oklab, var(--color-ink) 80%, var(--color-cream));
+  --color-line: color-mix(in oklab, var(--color-beige) 85%, var(--color-brand));
+
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+
+  /* Soft UI Evolution: bóng nhiều lớp, mềm hơn flat nhưng rõ hơn neumorphism */
+  --shadow-card:
+    0 1px 2px rgb(122 85 70 / 0.06),
+    0 10px 28px -14px rgb(122 85 70 / 0.28);
+  --shadow-soft:
+    0 2px 6px rgb(122 85 70 / 0.06),
+    0 24px 56px -26px rgb(122 85 70 / 0.42);
+  --shadow-button: 0 10px 24px -12px rgb(122 85 70 / 0.75);
+
+  /* Organic: bo góc 16–24px cho component, lớn hơn cho khối ảnh */
+  --radius-organic: 24px;
+
+  --ease-natural: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Website chỉ dùng chế độ sáng (R2.2) */
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Chừa chỗ cho header cố định khi nhảy tới anchor */
+  scroll-padding-top: 88px;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums;
+}
+
+/* Chặn tràn ngang (vd. phần tử data-reveal="left/right" đang dịch ra ngoài trước khi hiện)
+   – dùng clip thay vì hidden để không tạo vùng cuộn mới, không làm hỏng position: sticky */
+html,
+body {
+  overflow-x: clip;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+/* ====== Chống rớt 1 chữ xuống dòng cuối (kết hợp hàm nw()) ====== */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+p,
+li,
+blockquote,
+figcaption,
+label {
+  text-wrap: pretty;
+}
+
+/* ====== Accessible & Ethical ====== */
+/* Focus ring 3px luôn nhìn thấy khi dùng bàn phím */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-brand-dark);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* Skip link: hiện khi được focus bằng Tab */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--color-brand-dark);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease-natural);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ====== Micro-interactions ====== */
+/* Phản hồi khi nhấn (chạm trên mobile) */
+.press {
+  transition:
+    transform 0.2s var(--ease-natural),
+    box-shadow 0.25s var(--ease-natural),
+    background-color 0.2s ease,
+    color 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.25s ease,
+    visibility 0.25s;
+}
+
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Ảnh mờ dần khi đổi ca trước – sau */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Biểu tượng thành công "nảy" nhẹ khi gửi form */
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pop-in {
+  animation: pop-in 0.45s var(--ease-natural) both;
+}
+
+/* Nature Distilled: hạt nhiễu cực nhẹ, chỉ dùng cho nền be để có chất "giấy" ấm (gần như không thấy) */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ====== Hero: mép ảnh cong, mờ dần vào nền (không dùng đường thẳng) ====== */
+.mask-curve-left,
+.mask-curve-right,
+.mask-curve-bottom {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.mask-curve-left {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='2.2'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='7'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M-40 -40 H94 C74 4 98 18 82 30 C66 42 96 52 78 64 C62 76 94 86 74 98 C66 104 80 124 70 140 H-40 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M-40 -40 H80 C58 0 86 12 68 24 C50 36 84 46 64 58 C46 70 82 80 60 92 C50 98 66 120 56 140 H-40 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='2.2'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='7'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M-40 -40 H94 C74 4 98 18 82 30 C66 42 96 52 78 64 C62 76 94 86 74 98 C66 104 80 124 70 140 H-40 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M-40 -40 H80 C58 0 86 12 68 24 C50 36 84 46 64 58 C46 70 82 80 60 92 C50 98 66 120 56 140 H-40 Z'/%3E%3C/svg%3E");
+}
+
+.mask-curve-right {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='2.2'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='7'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M 140 -40 H 6 C 26 4 2 18 18 30 C 34 42 4 52 22 64 C 38 76 6 86 26 98 C 34 104 20 124 30 140 H 140 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M 140 -40 H 20 C 42 0 14 12 32 24 C 50 36 16 46 36 58 C 54 70 18 80 40 92 C 50 98 34 120 44 140 H 140 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='2.2'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='7'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M 140 -40 H 6 C 26 4 2 18 18 30 C 34 42 4 52 22 64 C 38 76 6 86 26 98 C 34 104 20 124 30 140 H 140 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M 140 -40 H 20 C 42 0 14 12 32 24 C 50 36 16 46 36 58 C 54 70 18 80 40 92 C 50 98 34 120 44 140 H 140 Z'/%3E%3C/svg%3E");
+}
+
+.mask-curve-bottom {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='1.8'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M-40 -40 H140 V78 C122 92 104 70 84 84 C64 98 46 72 28 88 C14 98 2 78 -40 92 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M-40 -40 H140 V64 C122 80 104 56 84 70 C64 84 46 58 28 74 C14 86 2 64 -40 78 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='1.8'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M-40 -40 H140 V78 C122 92 104 70 84 84 C64 98 46 72 28 88 C14 98 2 78 -40 92 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M-40 -40 H140 V64 C122 80 104 56 84 70 C64 84 46 58 28 74 C14 86 2 64 -40 78 Z'/%3E%3C/svg%3E");
+}
+
+/* ====== Hero intro (CSS thuần, không chờ JS để không làm chậm LCP) ====== */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-in {
+  animation: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* ====== Reveal khi cuộn ====== */
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal='left'] {
+  transform: translateX(-48px);
+}
+
+[data-reveal='right'] {
+  transform: translateX(48px);
+}
+
+[data-reveal='up'] {
+  transform: translateY(32px);
+}
+
+[data-reveal='flip'] {
+  transform: perspective(900px) rotateX(-32deg) translateY(28px);
+  transform-origin: top center;
+}
+
+[data-reveal='grow-x'] {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+[data-reveal='grow-c'] {
+  transform: scaleX(0);
+  transform-origin: center;
+}
+
+/* Mờ nét + nhích nhẹ lên: dịu hơn blur đứng yên */
+[data-reveal='blur'] {
+  transform: translateY(18px);
+  filter: blur(8px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s ease;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Ảnh trong card: phóng to rồi "lắng" về đúng cỡ khi card hiện */
+[data-reveal] .reveal-zoom {
+  transform: scale(1.14);
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].is-revealed .reveal-zoom {
+  transform: scale(1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (scripting: none) {
+  /* SplitText ẩn chữ cho tới khi JS chạy → không có JS thì phải hiện lại */
+  .split-parent {
+    visibility: visible !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  [data-reveal] .reveal-zoom {
+    transform: none;
+    transition: none;
+  }
+
+  .hero-in,
+  .pop-in,
+  .fade-in {
+    animation: none;
+  }
+
+  .press:active {
+    transform: none;
+  }
+}
