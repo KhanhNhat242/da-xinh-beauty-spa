@@ -22,6 +22,8 @@ export type IconKey =
   | 'handshake'
   | 'menu'
   | 'close'
+  | 'play'
+  | 'volume'
   | 'facebook'
   | 'search'
   | 'chart'
@@ -118,6 +120,8 @@ const paths: Record<IconKey, ReactNode> = {
     </>
   ),
   menu: <path d="M4 7h16M4 12h16M4 17h10" />,
+  play: <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor" />,
+  volume: <path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4v-5ZM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />,
   close: <path d="M6 6l12 12M18 6 6 18" />,
   facebook: <path d="M14 8.5h2.5V5h-2.5A3.5 3.5 0 0 0 10.5 8.5v2H8V14h2.5v6.5H14V14h2.5l.5-3.5h-3v-1.5c0-.3.2-.5.5-.5Z" />,
   search: (

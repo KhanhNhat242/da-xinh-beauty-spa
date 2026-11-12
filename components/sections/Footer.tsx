@@ -65,20 +65,22 @@ export default function Footer() {
               </span>
             </li>
           </ul>
-          <nav aria-label="Liên kết chân trang" className="mt-6">
-            <ul className="flex flex-wrap gap-x-5 text-[15px] font-medium text-brand-dark">
-              {navLinks.map((l) => (
-                <li key={l.href}>
-                  <a href={l.href} className="inline-flex min-h-11 items-center underline-offset-4 hover:text-ink hover:underline">
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </div>
-      <div className="mx-auto mt-12 w-full max-w-6xl border-t border-brand/15 px-4 pt-6 text-center text-sm text-muted sm:px-6 lg:px-8">
+
+      {/* Liên kết nhanh: dải riêng rộng hết khung → luôn đủ chỗ cho cả 5 link trên một hàng (tablet/desktop) */}
+      <nav aria-label="Liên kết chân trang" className="mx-auto mt-10 w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <ul className="mx-auto flex max-w-[18rem] flex-wrap justify-center gap-x-7 gap-y-1 text-[15px] font-medium text-brand-dark sm:max-w-none sm:gap-x-9">
+          {navLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} className="inline-flex min-h-11 items-center whitespace-nowrap underline-offset-4 hover:text-ink hover:underline">
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="mx-auto mt-4 w-full max-w-6xl border-t border-brand/15 px-4 pt-6 text-center text-sm text-muted sm:px-6 lg:px-8">
         © {site.name}
       </div>
     </footer>

@@ -114,9 +114,25 @@ export function ButtonLink({
 /**
  * Đường chuyển mềm giữa 2 section: đặt ở đáy section trên, tô màu của section dưới.
  */
-export function WaveDivider({ fill, flip }: { fill: 'cream' | 'beige'; flip?: boolean }) {
+export function WaveDivider({
+  fill,
+  flip,
+  position = 'bottom',
+}: {
+  fill: 'cream' | 'beige'
+  flip?: boolean
+  /** 'top': đặt ở đỉnh section dưới, tô màu section trên (dùng khi section dưới có ảnh nền) */
+  position?: 'top' | 'bottom'
+}) {
   return (
-    <div aria-hidden="true" className={cx('pointer-events-none absolute inset-x-0 bottom-0 leading-none', flip && '-scale-x-100')}>
+    <div
+      aria-hidden="true"
+      className={cx(
+        'pointer-events-none absolute inset-x-0 leading-none',
+        position === 'top' ? 'top-0 -scale-y-100' : 'bottom-0',
+        flip && '-scale-x-100',
+      )}
+    >
       <svg
         viewBox="0 0 1440 80"
         preserveAspectRatio="none"

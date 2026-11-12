@@ -3,7 +3,7 @@ import OfferCards from './OfferCards'
 
 export default function Offers() {
   return (
-    <section id="uu-dai" aria-labelledby="uu-dai-title" className="grain relative isolate bg-beige pt-14 pb-24 md:pt-16 md:pb-28 lg:pt-24 lg:pb-36">
+    <section id="uu-dai" aria-labelledby="uu-dai-title" className="grain relative isolate z-10 bg-beige pt-14 pb-24 md:pt-16 md:pb-28 lg:pt-24 lg:pb-36">
       <Container>
         <SectionHeading
           id="uu-dai-title"

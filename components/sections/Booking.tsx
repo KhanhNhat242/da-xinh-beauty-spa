@@ -1,3 +1,5 @@
+import Image from 'next/image'
+import bookingBg from '@/public/images/site/booking-bg.webp'
 import { Container, revealDelay } from '@/components/ui/primitives'
 import Icon from '@/components/ui/Icon'
 import BookingForm from './BookingForm'
@@ -6,7 +8,22 @@ import { nw } from '@/lib/no-widow'
 
 export default function Booking() {
   return (
-    <section id="dat-lich" aria-labelledby="dat-lich-title" className="grain relative isolate bg-beige pt-14 pb-16 md:pt-16 md:pb-20 lg:pt-24 lg:pb-28">
+    <section
+      id="dat-lich"
+      aria-labelledby="dat-lich-title"
+      className="relative isolate overflow-hidden bg-beige pt-14 pb-16 md:pt-16 md:pb-20 lg:flex lg:min-h-svh lg:items-center lg:pt-24 lg:pb-28"
+    >
+      {/* Ảnh nền màu nước phủ kín toàn section (full chiều ngang, cao tối thiểu 1 màn hình trên desktop) */}
+      <Image
+        src={bookingBg}
+        alt=""
+        fill
+        sizes="100vw"
+        quality={85}
+        className="pointer-events-none -z-20 object-cover object-center"
+      />
+      {/* Lớp kem mờ mỏng giữ chữ dễ đọc trên nền ảnh */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-cream/35" />
       <Container>
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
           {/* Form đặt lịch */}

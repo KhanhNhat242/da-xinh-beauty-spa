@@ -199,6 +199,96 @@ label {
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='c' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='1.8'/%3E%3C/filter%3E%3Cfilter id='h' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cpath filter='url(%23h)' fill='%23fff' fill-opacity='.5' d='M-40 -40 H140 V78 C122 92 104 70 84 84 C64 98 46 72 28 88 C14 98 2 78 -40 92 Z'/%3E%3Cpath filter='url(%23c)' fill='%23fff' d='M-40 -40 H140 V64 C122 80 104 56 84 70 C64 84 46 58 28 74 C14 86 2 64 -40 78 Z'/%3E%3C/svg%3E");
 }
 
+/* ====== Hero: 2 ảnh hai bên trượt vào (trái → phải, phải → trái) tới vị trí mép cong ======
+   #top[data-inview] do components/ui/HeroInView.tsx bật/tắt mỗi lần Hero vào/ra khỏi màn hình. */
+[data-hero-slide] {
+  transition:
+    transform 1.3s var(--ease-natural),
+    opacity 1s ease-out;
+  will-change: transform;
+}
+
+[data-hero-slide='right'] {
+  transition-delay: 0.12s;
+}
+
+#top[data-inview='false'] [data-hero-slide] {
+  opacity: 0;
+  /* Khi reset (Hero đã khuất) thì không cần chạy ngược */
+  transition-duration: 0s;
+  transition-delay: 0s;
+}
+
+#top[data-inview='false'] [data-hero-slide='left'] {
+  transform: translateX(-100%);
+}
+
+#top[data-inview='false'] [data-hero-slide='right'] {
+  transform: translateX(100%);
+}
+
+/* ====== Card visit Ưu đãi: bồng bềnh như nổi trên mặt nước (khi chưa hover) ======
+   Thẻ và bóng dùng chung chu kỳ để khớp nhịp: thẻ nổi lên → bóng thu nhỏ, nhạt đi. */
+@keyframes float-water {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-8px) rotate(-0.9deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(0.4deg);
+  }
+
+  75% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@keyframes water-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  25% {
+    transform: scaleX(0.88);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scaleX(0.95);
+    opacity: 0.9;
+  }
+
+  75% {
+    transform: scaleX(0.84);
+    opacity: 0.6;
+  }
+}
+
+.float-water {
+  animation: float-water 6.5s ease-in-out infinite;
+}
+
+.water-shadow {
+  animation: water-shadow 6.5s ease-in-out infinite;
+}
+
+/* Thẻ thứ hai lệch nhịp để hai thẻ không nhấp nhô cùng lúc */
+.float-delay {
+  animation-delay: -3.2s;
+}
+
+/* Hover: dừng bồng bềnh (giữ nguyên tư thế hiện tại, không giật về 0) */
+.float-water.is-paused {
+  animation-play-state: paused;
+}
+
 /* ====== Hero intro (CSS thuần, không chờ JS để không làm chậm LCP) ====== */
 @keyframes hero-in {
   from {
@@ -281,6 +371,11 @@ label {
 }
 
 @media (scripting: none) {
+  #top[data-inview='false'] [data-hero-slide] {
+    opacity: 1;
+    transform: none;
+  }
+
   /* SplitText ẩn chữ cho tới khi JS chạy → không có JS thì phải hiện lại */
   .split-parent {
     visibility: visible !important;
@@ -298,6 +393,13 @@ label {
     scroll-behavior: auto;
   }
 
+  #top [data-hero-slide],
+  #top[data-inview='false'] [data-hero-slide] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   [data-reveal] {
     opacity: 1;
     transform: none;
@@ -312,7 +414,9 @@ label {
 
   .hero-in,
   .pop-in,
-  .fade-in {
+  .fade-in,
+  .float-water,
+  .water-shadow {
     animation: none;
   }
 

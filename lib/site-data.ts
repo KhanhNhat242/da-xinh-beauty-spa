@@ -197,9 +197,10 @@ export type BeforeAfterCase = {
   after: string
 }
 
+// Thứ tự tab: Peel da (trái, mở mặc định) – Trị mụn (phải)
 export const beforeAfterTabs = [
-  { value: 'tri-mun', label: 'Trị mụn' },
   { value: 'peel-da', label: 'Peel da' },
+  { value: 'tri-mun', label: 'Trị mụn' },
 ] as const
 
 const ba = (file: string) => ({
@@ -229,10 +230,77 @@ export const beforeAfterCases: BeforeAfterCase[] = [
   { id: 'peel-tao-canxi-4', service: 'peel-da', treatment: 'Peel tảo canxi', facts: taoCanxiFacts, ...ba('peel-tao-canxi-4') },
 ]
 
+/**
+ * Video thực tế (file trong public/videos). Ảnh bìa: public/videos/posters (cắt từ khung hình, bỏ chữ giá in sẵn).
+ * Tiêu đề lấy theo chữ hiện trên video hoặc mô tả trung tính đúng nội dung khung hình; chú thích chỉ dùng
+ * nguyên văn bài đăng Facebook của khách — không tự viết thêm (R1.2).
+ */
+export type SpaVideo = {
+  id: string
+  src: string
+  poster: string
+  title: string
+  /** Chú thích nguyên văn bài đăng; null = chưa có (TODO content) */
+  caption: string | null
+  /** Thời lượng (giây) đọc từ file */
+  duration: number
+}
+
+export const spaVideos: SpaVideo[] = [
+  {
+    id: 'video1',
+    src: '/videos/video1.mp4',
+    poster: '/videos/posters/video1.webp',
+    title: 'Pov: Lần đầu đi chăm sóc da mụn',
+    caption: null, // TODO(content): chờ khách gửi chú thích bài đăng gốc
+    duration: 103,
+  },
+  {
+    id: 'video2',
+    src: '/videos/video2.mp4',
+    poster: '/videos/posters/video2.webp',
+    title: 'Chăm sóc da bằng Microneedling',
+    caption: null, // TODO(content): chờ khách gửi chú thích bài đăng gốc
+    duration: 28,
+  },
+  {
+    id: 'video3',
+    src: '/videos/video3.mp4',
+    poster: '/videos/posters/video3.webp',
+    title: 'Hành trình Peel tảo canxi của TikToker Phi Yến',
+    // Nguyên văn phần đã có của bài đăng Facebook. TODO(content): bổ sung phần còn lại của chú thích.
+    caption: [
+      'HÀNH TRÌNH PEEL TẢO CANXI CỦA TIKTOKER PHI YẾN TẠI DA XINH BEAUTY SPA',
+      'Peel da không chỉ là câu chuyện trước và sau một buổi làm đẹp, mà còn là hành trình theo dõi và chăm sóc làn da qua từng ngày.',
+      'Lần này, cùng KOC Phi Yến theo dõi hành trình trải nghiệm Peel Tảo Canxi tại Da Xinh Beauty Spa nhé!',
+      '📍 Từ buổi peel đầu tiên, những ngày da thay đổi cho đến khi làn da dần phục hồi - mỗi giai đoạn đều được ghi lại qua những video follow-up thực tế.',
+      '🌸 Cùng Phi Yến theo dõi từng chặng của hành trình:',
+      '➖ Ngày đầu tiên: Trải nghiệm quy trình Peel Tảo Canxi tại Da Xinh.',
+    ].join('\n'),
+    duration: 74,
+  },
+  {
+    id: 'video4',
+    src: '/videos/video4.mp4',
+    poster: '/videos/posters/video4.webp',
+    title: 'Soi da và lấy nhân mụn tại Da Xinh',
+    caption: null, // TODO(content): chờ khách gửi chú thích bài đăng gốc
+    duration: 73,
+  },
+  {
+    id: 'video5',
+    src: '/videos/video5.mp4',
+    poster: '/videos/posters/video5.webp',
+    title: 'Hôm nay mình trải nghiệm dịch vụ có tốt không ạ',
+    caption: null, // TODO(content): chờ khách gửi chú thích bài đăng gốc
+    duration: 108,
+  },
+]
+
 export const navLinks = [
+  { href: '#uu-dai', label: 'Ưu đãi 198K' },
   { href: '#dich-vu', label: 'Dịch vụ' },
   { href: '#truoc-sau', label: 'Kết quả' },
-  { href: '#uu-dai', label: 'Ưu đãi 198K' },
+  { href: '#video', label: 'Video' },
   { href: '#cam-ket', label: 'Cam kết' },
-  { href: '#co-so', label: 'Cơ sở' },
 ] as const

@@ -1,4 +1,4 @@
-import { Container, SectionHeading, WaveDivider } from '@/components/ui/primitives'
+import { Container, SectionHeading } from '@/components/ui/primitives'
 import BeforeAfterSlider from './BeforeAfterSlider'
 import { beforeAfterCases, beforeAfterTabs } from '@/lib/site-data'
 
@@ -20,7 +20,6 @@ export default function BeforeAfter() {
         </div>
       </Container>
 
-      <WaveDivider fill="cream" flip />
     </section>
   )
 }

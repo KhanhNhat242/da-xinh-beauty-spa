@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 // Bản logo màu brand-dark: tương phản tốt hơn khi nằm trên ảnh Hero
 import logo from '@/public/images/site/logo-daxinh-dark.png'
 import Icon from '@/components/ui/Icon'
@@ -10,6 +10,8 @@ import { navLinks, site } from '@/lib/site-data'
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  /** Link menu mobile vừa bấm — cuộn tới sau khi đóng menu và mở khoá cuộn */
+  const pendingHash = useRef<string | null>(null)
   // Trang mở ở đầu → mặc định đang trong Hero (tránh nút nháy hiện rồi ẩn)
   const [inHero, setInHero] = useState(true)
 
@@ -41,7 +43,42 @@ export default function Header() {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+
+    // Khoá cuộn trang khi menu mobile đang mở (cả iOS Safari: ghim body tại vị trí hiện tại)
+    const html = document.documentElement
+    const body = document.body
+    const y = window.scrollY
+    const prev = { htmlOverflow: html.style.overflow, position: body.style.position, top: body.style.top, width: body.style.width }
+    html.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${y}px`
+    body.style.width = '100%'
+
+    // Màn hình rộng ra (≥ lg) thì menu mobile không còn → tự đóng để mở khoá cuộn
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const onWide = () => mq.matches && setOpen(false)
+    mq.addEventListener('change', onWide)
+
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      mq.removeEventListener('change', onWide)
+      html.style.overflow = prev.htmlOverflow
+      body.style.position = prev.position
+      body.style.top = prev.top
+      body.style.width = prev.width
+      // Khôi phục đúng vị trí cuộn, không chạy hiệu ứng cuộn mượt
+      html.style.scrollBehavior = 'auto'
+      window.scrollTo(0, y)
+      html.style.scrollBehavior = ''
+
+      // Nếu đóng menu do bấm link → giờ mới cuộn mượt tới section đó
+      const hash = pendingHash.current
+      pendingHash.current = null
+      if (hash) {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        history.replaceState(null, '', hash)
+      }
+    }
   }, [open])
 
   return (
@@ -122,7 +159,12 @@ export default function Header() {
               <li key={l.href}>
                 <a
                   href={l.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => {
+                    // Trang đang bị khoá cuộn → đóng menu trước, cuộn tới section sau khi mở khoá
+                    e.preventDefault()
+                    pendingHash.current = l.href
+                    setOpen(false)
+                  }}
                   tabIndex={open ? 0 : -1}
                   className="flex min-h-12 items-center justify-between rounded-2xl px-4 text-base font-medium text-ink transition-colors hover:bg-pink/60"
                 >

@@ -4,6 +4,7 @@ import heroLeft from '@/public/images/site/hero-trai.webp'
 import heroRight from '@/public/images/site/hero-phai.webp'
 import { ButtonLink, WaveDivider } from '@/components/ui/primitives'
 import SplitText from '@/components/ui/SplitText'
+import HeroInView from '@/components/ui/HeroInView'
 import { nw } from '@/lib/no-widow'
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties
@@ -18,34 +19,35 @@ export default function Hero() {
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="relative isolate overflow-hidden bg-cream lg:flex lg:h-svh lg:max-h-[960px] lg:min-h-[680px] lg:items-center lg:pt-20"
+      data-inview="false"
+      className="relative isolate overflow-hidden bg-cream lg:flex lg:h-svh lg:max-h-[960px] lg:min-h-[680px] lg:items-center lg:pt-20 2xl:h-auto 2xl:max-h-none 2xl:min-h-0 2xl:pt-[calc(5rem+7.5rem)] 2xl:pb-40"
     >
       {/* Ảnh mép trái (desktop) */}
       <div
-        className="hero-in mask-curve-left pointer-events-none absolute inset-y-0 left-0 -z-10 hidden w-[31%] lg:block xl:w-[35%] 2xl:w-[37%]"
-        style={d(0)}
+        data-hero-slide="left"
+        className="mask-curve-left pointer-events-none absolute inset-y-0 left-0 -z-10 hidden w-[31%] lg:block xl:w-[35%] 2xl:w-[min(37%,52rem)]"
       >
         <Image
           src={heroRight}
           alt="Kỹ thuật viên Da Xinh thoa dưỡng chất cho khách nam"
           fill
           loading="eager"
-          sizes="(min-width: 1536px) 37vw, (min-width: 1280px) 35vw, 31vw"
+          sizes="(min-width: 1536px) min(37vw, 832px), (min-width: 1280px) 35vw, 31vw"
           className="object-cover object-[8%_40%]"
         />
       </div>
 
       {/* Ảnh mép phải (desktop) */}
       <div
-        className="hero-in mask-curve-right pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[31%] lg:block xl:w-[35%] 2xl:w-[37%]"
-        style={d(120)}
+        data-hero-slide="right"
+        className="mask-curve-right pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[31%] lg:block xl:w-[35%] 2xl:w-[min(37%,52rem)]"
       >
         <Image
           src={heroLeft}
           alt="Kỹ thuật viên Da Xinh đang chăm sóc da cho khách tại phòng trị liệu"
           fill
           loading="eager"
-          sizes="(min-width: 1536px) 37vw, (min-width: 1280px) 35vw, 31vw"
+          sizes="(min-width: 1536px) min(37vw, 832px), (min-width: 1280px) 35vw, 31vw"
           className="object-cover object-[100%_45%]"
         />
       </div>
@@ -116,6 +118,7 @@ export default function Hero() {
       </div>
 
       <WaveDivider fill="beige" />
+      <HeroInView />
     </section>
   )
 }

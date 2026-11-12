@@ -3,6 +3,7 @@ import Hero from '@/components/sections/Hero'
 import Offers from '@/components/sections/Offers'
 import Services from '@/components/sections/Services'
 import BeforeAfter from '@/components/sections/BeforeAfter'
+import Videos from '@/components/sections/Videos'
 import Commitments from '@/components/sections/Commitments'
 import Booking from '@/components/sections/Booking'
 import Footer from '@/components/sections/Footer'
@@ -50,6 +51,7 @@ export default function Home() {
         <Offers />
         <Services />
         <BeforeAfter />
+        <Videos />
         <Commitments />
         <Booking />
       </main>
